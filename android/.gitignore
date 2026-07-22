@@ -1,0 +1,17 @@
+gradle-wrapper.jar
+/.gradle
+/captures/
+/gradlew
+/gradlew.bat
+/local.properties
+GeneratedPluginRegistrant.java
+.cxx/
+
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/to/reference-keystore
+# 注意：本项目为个人单机使用，需保证覆盖安装不丢数据，故固定签名随工程走。
+# 若日后公开仓库，请移除下方放行并改用本地 key.properties。
+**/*.keystore
+**/*.jks
+!schedule_release.keystore
+!key.properties

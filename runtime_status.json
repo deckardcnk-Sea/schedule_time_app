@@ -1,0 +1,118 @@
+{
+  "project": "复刻苹果日历 App (schedule_time_app)",
+  "engine": "Flutter 3.44.x / Dart",
+  "last_updated": "2026-07-22T18:19:00+08:00",
+  "completed": {
+    "2026-07-21": [
+      "完成态/勾选态文字去灰改黑（日/周/月/提醒页）",
+      "编辑器弹窗红色标签→黑 + 三处弹窗统一 showCupertinoModalPopup",
+      "时间记录持久化 + 暂停分段（切tab/关软件不丢，停止按真实时段生成多段Task）",
+      "记录按钮白字 + 备注显示在活动色块（displayTitle = 标题：（备注））",
+      "需求3 二次确认弹窗（居中缩放，取消/确认结束）"
+    ],
+    "2026-07-22": [
+      "六项 bug 修复：活动配置真机持久化(_prefs初始化+写SP)、活动网格底部留白、管理弹窗分段红字荧光(CupertinoTheme)、已完成灰字、日历页黑屏(ScaffoldMessenger→Overlay toast)、返回键PopScope",
+      "致命崩溃修复：tasks表缺seriesId/occurrenceDate列致db.insert崩溃白屏→DB升v4加列 + addTask/updateTask/deleteTask try/catch兜底",
+      "返回上一页逻辑：根PopScope用Navigator.canPop决策(先pop子页再切tab)，popover残留修复(showApplePopover返回entry+close回调)",
+      "任务编辑页备注强化：备注框提前到标题下方、占位符提示与记录模块同步",
+      "客户会议红线消除(demo colorValue 0→6)、计划页荧光杀灭(CupertinoTheme兜底)",
+      "记录保存重叠改为静默(删丑贴条)，日/周视图已支持重叠左右分块",
+      "统计自定义时间段：新增range_picker_sheet.dart(日/周点选月历、月左右推年+输年+年历选月、年仅左右箭头)，stats_page顶栏自定义按钮+_customRange覆盖",
+      "备注样式：displayTitle去括号，各视图备注独立小字行(日/周/列表)，颜色对齐时间标识；月视图空间不足保留纯标题",
+      "提醒页参考图修正：标题红色+筛选黄色荧光底→显式黑字/透明背景/无decoration兜底",
+      "周视图重叠块位置修复：left = colWidth * leftRatio（原多乘widthRatio致右侧块只到1/4处）",
+      "周视图任务块高度溢出加固：高度紧张时取消textTopOffset、严格条件才显示时间行/备注",
+      "全局荧光下划线/装饰筛查：自动脚本为80处显式TextStyle补decoration:none；main.dart全局CupertinoTheme+DefaultTextStyle兜底；快速记录页移除彩色icon/bullet的boxShadow（避免阴影被误读为下划线）",
+      "release预览更新：flutter build web --release --no-tree-shake-icons成功；桌面「预览日历_release.bat」新建/更新至端口8106，原debug bat保留",
+      "统计页增强：新增donut_chart.dart(圆环+引导线+标注+点击命中)；stats_page支持三种粒度(小类默认/一级大类/二级大类下小类)，统计标题下方popover切换；二级先半透明遮罩+一级donut，点块AnimatedScale(1.18)明显缩放后进二级",
+      "统计页按参考图调整：donut变小居中、引导线折向左右两侧圈外、标注自动垂直错开防重叠、总时间移到右上角避免重叠；下方恢复列表说明并加排名序号+彩色进度条",
+      "统计页donut重绘(解决15:26用户反馈仍重叠)：引导线改为从圆环外缘直接接出→短直线→二次贝塞尔曲线柔和弯出→末端文字沿切线延伸，不再方正硬对齐两列；圆环缩至outerR=size*0.20；总时间置右上角靠边并加禁区避让防压字；标注字号缩小(名称12彩色/比例9灰)。flutter analyze零error + build web release成功",
+      "统计页donut对齐参考图重绘(16:07)：文字改为「名称 百分比」单行统一灰色；左侧文字→曲线→圆环，右侧圆环→曲线→文字；引导线用单一二次贝塞尔柔和曲线直接连接文字与圆环；圆环间距gap=0.018、outerR=size*0.195/innerR=size*0.135；总时间缩小置右上角。flutter analyze零issue + build web release成功",
+      "统计页donut微调(16:15)：用户反馈线太长曲度不自然、环太小、间隔太大。改为：引导线=圆环外缘垂直短段(11px)+轻微贝塞尔微弯到文字(短线协调)；圆环放大outerR=size*0.26/innerR=size*0.19；间距gap=0.006(极细缝)；文字贴圆环labelMargin=16。flutter analyze零issue + build web release成功",
+      "统计页donut再调(16:23)：用户截图指出线仍太长且有转折角、执着于文字竖直对齐。改为：标签沿径向均匀分布，线长固定24px；引导线用单一二次贝塞尔无转折点，控制点沿半径垂直方向轻微外推；防重叠由y轴改为角度轴；左侧/右侧文字不再对齐竖直线，自然散布；右侧上方预留禁区避让总时间。flutter analyze零issue + build web release成功",
+      "统计页donut弯曲方向修正(16:46)：用户指出所有线同方向偏转、末端未趋水平。改控制点策略：ctrl.dy=labelAttach.dy使终点切线趋于水平、ctrl.x偏向圆环侧(0.32)使弯曲集中在环端；线长缩到20px更紧凑；纯曲线无直线段，上者下弯下者上弯、末端水平贴文字。flutter analyze零issue + build web release成功",
+      "统计页donut细节修正(16:56)：①去掉末端小圆点，引导线起点直接落在圆环外缘(outerR)与色块相连无缝隙；②小类(sub)模式不再拼「未分类·」前缀，直接显示活动名(title)；③线段长度随角度轻微变化(18+sin*10，水平短上下长)贴合参考图。flutter analyze仅存量info + build web release成功",
+      "统计页donut配色参考图(17:08)：新增 donutPalette(12色柔和粉彩苹果风) + donutColor(seed)；stats_page 两处 DonutSlice 配色由 autoColor 改为 donutColor，使甜甜圈各段颜色贴近参考图风格（不影响日历其他处的 taskPalette）。flutter analyze仅存量info(4个value弃用) + build web release成功",
+      "统计页donut配色改回真实活动色(17:24)：用户指出甜甜圈颜色应和创建任务时选的颜色一致。改为聚合时记录每个 key 对应的 task.colorValue，DonutSlice.color 直接用 Color(colorValue)；donutColor 仅作缺失兜底(未命名等)。一级/二级模式同样处理。flutter analyze仅2个存量info + build web release成功",
+      "统计页donut字体fallback修复(17:32)：用户截图发现标题含方块乱码。根因donut_chart里TextStyle显式指定fontFamily:'.SF Pro Text'，不支持标题里的emoji/特殊字符。改为不指定fontFamily，使用系统默认字体族自动fallback。flutter analyze零issue + build web release成功",
+      "数据备份与导入项目(17:36)：①DatabaseService.importBackup 增加合并去重(按title+start+end+colorValue判重，跳过重复)；②TaskProvider.importBackupUnified(jsonStr) 新入口：Web合并进_memoryStore并_persistMemory+notifyListeners+loadDay，移动端调_db.importBackup；③stats_page顶栏加「导入」按钮(备份旁)，弹窗可粘贴JSON或「从剪贴板粘贴」→导入→提示导入条数。两端通用粘贴方案，未引入file_picker依赖。flutter analyze仅存量warning/info + build web release成功",
+      "备份纳入个人偏好(18:08)：用户要求备份含所有个人偏好设置包括颜色。改为导出JSON新增categories/activities字段(分类名+颜色、活动名+图标+所属分类)；importBackupUnified 解析后恢复_categories/_activityTypes并_persistActivities。Web端exportBackupJson直接拼装；移动端exportBackup(...categories/activities)参数传入；DatabaseService.importBackup仅处理tasks(偏好由provider恢复)。flutter analyze仅存量warning/info + build web release成功",
+      "Android自动更新+固定签名(18:19)：用户手机为主、频繁迭代。①keytool生成固定keystore(schedule_release.keystore,有效期10000天)放android/app/，key.properties存密码，build.gradle.kts release用其签名→覆盖安装不丢数据；android/.gitignore放行该keystore+key.properties(个人单机)；②新增update_service.dart：读固定URL的version.json比对buildNumber，有更新下载apk调OpenFile覆盖安装；③pubspec加package_info_plus/http/open_file；④main.dart RootScaffold.initState启动2s后静默检查更新(非Web)，弹窗「立即更新/稍后」；⑤Web版部署CloudStudio固定URL(沙箱可能回收)。baseUrl仍TODO需填真实托管地址。flutter analyze仅1个info + build web release成功；apk真编译需本机SDK(沙箱无)"
+    ]
+  },
+  "glossary": {
+    "日程": "独立待办，带可勾选圆圈，可完成，不一定在时间轴",
+    "活动": "时间轴上的彩色色块，真正占时间的计时/记录",
+    "任务栏": "活动色块的口语叫法",
+    "任务": "底层数据模型 Task"
+  },
+  "build_verify": "dart analyze 无 error 即过关；flutter build apk / web 成功即零回归",
+  "active_requirement": {
+    "id": "需求4",
+    "name": "退出软件后后台计时 + 系统悬浮窗（自写原生 Kotlin 胶囊）",
+    "env": "真机 Android",
+    "scope": "在真机试验中达到目的即可，不追求 1:1 复刻 iOS 灵动岛",
+    "status": "code_done_await_native_verify",
+    "subtasks": [
+      {"id": "4-1", "desc": "加 Android 前台服务依赖(flutter_background_service) + 权限声明", "status": "completed"},
+      {"id": "4-2", "desc": "实现前台服务：App退后台仍持续计时(基于RecordingSession真实时间模型)", "status": "completed"},
+      {"id": "4-3", "desc": "实现系统悬浮窗（初期用system_alert_window，后废弃）", "status": "completed"},
+      {"id": "4-4", "desc": "Flutter端与原生服务桥接(开始/停止→启动/停止服务+悬浮窗；状态回传UI)", "status": "completed"},
+      {"id": "4-5", "desc": "Dart层 flutter analyze 零error + 原生编译指南", "status": "completed"},
+      {"id": "4-6", "desc": "自写原生悬浮窗胶囊(FloatingWindowService.kt + MainActivity.kt MethodChannel，取代system_alert_window)", "status": "code_done_await_native_build"},
+      {"id": "4-7", "desc": "本机真机编译验证(沙箱无Android SDK，需用户双击编译运行.bat在已装SDK本机跑)", "status": "blocked_no_sdk_in_sandbox"}
+    ]
+  },
+  "suspended": {
+    "需求4_web": "Web 环境无原生后台/悬浮窗能力，已与用户约定不实现；现改走真机Android路线"
+  },
+  "stats_range_picker": {
+    "file": "lib/widgets/range_picker_sheet.dart",
+    "entry": "showRangePicker(context) -> Future<DateTimeRange?>",
+    "behavior": "先选后确定：点选仅高亮（日/周=蓝色圆形、月=蓝色块、年=蓝色行），底部「确定」才返回 DateTimeRange，给用户改主意机会；「取消」关闭不返回",
+    "type_design": {
+      "日": "月历网格点选单日，from=当日0点 to=次日0点",
+      "周": "月历点选某天→按周一~下周一整周",
+      "月": "左右箭头推年 + 3×4 月份网格，选中整月",
+      "年": "年份列表（ListView 可滚动，焦点年±10~±30），选中整年"
+    },
+    "state": ["_type", "_focus", "_yearFocus", "_selectedDay", "_selectedMonth", "_selectedYear"],
+    "verify": "flutter analyze 零 issue（2026-07-22）",
+    "stats_page_caller": "lib/pages/stats_page.dart:_pickCustom 直接 await showRangePicker，入口签名不变，无需改动"
+  },
+  "view_ux_cleanup_2026-07-22": {
+    "nowline_removed": "删除日/周视图当前时间线（day_timeline_view._buildNowLine + week_view isToday Positioned），用户确认不需要",
+    "demo_color_sync": "task_provider.initNativeStore 启动若库内同名任务 colorValue 与代码 demo 不一致自动 update（解决客户会议改蓝后旧数据不更新）",
+    "overflow_debug_bar": "日/周任务块 Container 加 clipBehavior:Clip.hardEdge + 收紧标题/时间行/备注显示高度条件，消除 debug 模式 overflow 调试条（release 本不显示）",
+    "verify": "flutter analyze 三文件零 error（warning/info 为存量，非本次引入）"
+  },
+  "range_picker_v2_2026-07-22": {
+    "file": "lib/widgets/range_picker_sheet.dart",
+    "reason": "用户反馈仍有荧光+月历竖排 bug，并提供记账 App 日/年月选择参考图",
+    "changes": {
+      "荧光杀灭": "所有 Text/Icon 显式 color:AppColors.label 或 white，背景透明/明确，无 decoration",
+      "日周月历": "修复把 Expanded 直接放 Column 导致日期竖排的 bug；改为每周一个 Row，7 列网格；星期行按周日开头；年月标题黑色",
+      "月视图": "参考图3改为左右双列：左侧年份列表、右侧月份列表，选中蓝色块高亮",
+      "年视图": "单列年份列表，蓝色选中块",
+      "底部按钮": "取消（灰文字）+ 蓝色大圆角确定按钮"
+    },
+    "verify": "flutter analyze 零 issue"
+  },
+  "white_screen_2026-07-22": {
+    "symptom": "用户双击预览日历.bat 打开为白屏",
+    "root_cause": "调试模式 flutter run -d chrome 触发 native assets 编译，objective_c 包在 Windows 上 build.dart 失败（Building assets for package:objective_c failed）→ dev server 起不来 → 白屏。与业务代码无关",
+    "verify_evidence": "flutter build web --release --no-tree-shake-icons 成功；build/web 静态 serve 返回 200",
+    "fix": "新增桌面「预览日历_release.bat」：build web --release --no-tree-shake-icons 后 python -m http.server 8105 托 build/web，浏览器开 localhost:8105。原 debug bat 保留不动",
+    "note": "objective_c 是 flutter_background_service 等原生包依赖；Web 预览不需要原生资产，release build 跳过即可"
+  },
+  "context_control_discipline": {
+    "rule": "客户端存在自动上下文压缩，会话文本过高会强制删除早期信息导致需求丢失。必须主动控制会话体积。",
+    "must": [
+      "完整源代码/长篇测试日志只写本地文件，不在对话长期粘贴",
+      "每子任务保存后立刻精简对话，仅留项目规则摘要 + runtime_status 进度",
+      "不一次性输出超大篇幅文本",
+      "一旦出现上下文压缩提示，立刻暂停循环、优先精简会话"
+    ],
+    "permanent_files": ["runtime_status.json（进度唯一权威）", "docs/（说明文档）", "video_source/source_video.mp4 + feature_checklist_v2.md（功能源头最高权威，绝不可删）"]
+  }
+}
