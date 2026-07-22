@@ -47,3 +47,12 @@ app.*.map.json
 # 废弃脚本 / IDE 残留 / 沙箱运行记忆（不入库）
 /scratch/
 /.workbuddy/
+
+# 视频分析中间产物（帧图/音频/颜色样本/临时脚本，非源码，不入库）
+/video_source/_intermediate/
+
+# 一次性检查脚本（非运行依赖，不入库）
+/scripts/
+
+# 本地版本记录（更新逻辑依赖 runtime_status.json，不入库）
+/update/

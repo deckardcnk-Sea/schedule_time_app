@@ -1,7 +1,7 @@
 {
   "project": "复刻苹果日历 App (schedule_time_app)",
   "engine": "Flutter 3.44.x / Dart",
-  "last_updated": "2026-07-22T18:19:00+08:00",
+  "last_updated": "2026-07-22T19:52:00+08:00",
   "completed": {
     "2026-07-21": [
       "完成态/勾选态文字去灰改黑（日/周/月/提醒页）",
@@ -37,7 +37,8 @@
       "统计页donut字体fallback修复(17:32)：用户截图发现标题含方块乱码。根因donut_chart里TextStyle显式指定fontFamily:'.SF Pro Text'，不支持标题里的emoji/特殊字符。改为不指定fontFamily，使用系统默认字体族自动fallback。flutter analyze零issue + build web release成功",
       "数据备份与导入项目(17:36)：①DatabaseService.importBackup 增加合并去重(按title+start+end+colorValue判重，跳过重复)；②TaskProvider.importBackupUnified(jsonStr) 新入口：Web合并进_memoryStore并_persistMemory+notifyListeners+loadDay，移动端调_db.importBackup；③stats_page顶栏加「导入」按钮(备份旁)，弹窗可粘贴JSON或「从剪贴板粘贴」→导入→提示导入条数。两端通用粘贴方案，未引入file_picker依赖。flutter analyze仅存量warning/info + build web release成功",
       "备份纳入个人偏好(18:08)：用户要求备份含所有个人偏好设置包括颜色。改为导出JSON新增categories/activities字段(分类名+颜色、活动名+图标+所属分类)；importBackupUnified 解析后恢复_categories/_activityTypes并_persistActivities。Web端exportBackupJson直接拼装；移动端exportBackup(...categories/activities)参数传入；DatabaseService.importBackup仅处理tasks(偏好由provider恢复)。flutter analyze仅存量warning/info + build web release成功",
-      "Android自动更新+固定签名(18:19)：用户手机为主、频繁迭代。①keytool生成固定keystore(schedule_release.keystore,有效期10000天)放android/app/，key.properties存密码，build.gradle.kts release用其签名→覆盖安装不丢数据；android/.gitignore放行该keystore+key.properties(个人单机)；②新增update_service.dart：读固定URL的version.json比对buildNumber，有更新下载apk调OpenFile覆盖安装；③pubspec加package_info_plus/http/open_file；④main.dart RootScaffold.initState启动2s后静默检查更新(非Web)，弹窗「立即更新/稍后」；⑤Web版部署CloudStudio固定URL(沙箱可能回收)。baseUrl仍TODO需填真实托管地址。flutter analyze仅1个info + build web release成功；apk真编译需本机SDK(沙箱无)"
+      "Android自动更新+固定签名(18:19)：用户手机为主、频繁迭代。①keytool生成固定keystore(schedule_release.keystore,有效期10000天)放android/app/，key.properties存密码，build.gradle.kts release用其签名→覆盖安装不丢数据；android/.gitignore放行该keystore+key.properties(个人单机)；②新增update_service.dart：读固定URL的version.json比对buildNumber，有更新下载apk调OpenFile覆盖安装；③pubspec加package_info_plus/http/open_file；④main.dart RootScaffold.initState启动2s后静默检查更新(非Web)，弹窗「立即更新/稍后」；⑤Web版部署CloudStudio固定URL(沙箱可能回收)。flutter analyze仅1个info + build web release成功；apk真编译需本机SDK(沙箱无)",
+      "GitHub自动更新落地(19:52)：用户有GitHub账号(deckardcnk-Sea)。update_service.baseUrl改为raw.githubusercontent.com/deckardcnk-Sea/schedule_time_app/main/update/，读version.json比对buildNumber；新建update/version.json(占位versionCode=1)；工程git init+remote origin设好，commit两笔，本地分支改名main(与URL一致)；.gitignore追加忽略/scratch/和/.workbuddy/，修正android/.gitignore keystore放行顺序；写UPDATE_WORKFLOW.md说明出包→push→手机点更新流程。push需用户本机GitHub凭证(沙箱无gh/token)。仓库须public(raw才可读)。flutter analyze零issue"
     ]
   },
   "glossary": {
