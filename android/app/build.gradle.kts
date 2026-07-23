@@ -31,7 +31,7 @@ android {
             val keyPropsFile = rootProject.file("key.properties")
             if (keyPropsFile.exists()) {
                 val keyProps = java.util.Properties().apply {
-                    keyPropsFile.inputStream().use { load(it) }
+                    keyPropsFile.inputStream().use { input -> load(input) }
                 }
                 signingConfigs {
                     create("release") {
