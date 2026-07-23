@@ -1,0 +1,70 @@
+name: Build APK and publish to update/
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.6'
+          channel: 'stable'
+          cache: true
+
+      - name: Bump version (read update/version.json, +1)
+        run: |
+          set -e
+          if [ ! -f update/version.json ]; then
+            echo "update/version.json 不存在，跳过版本写入"
+            exit 0
+          fi
+          python3 - <<PY
+          import json, re
+          with open('pubspec.yaml') as f:
+              ps = f.read()
+          m = re.search(r'version:\s*([0-9]+\.[0-9]+\.[0-9]+)\+(\d+)', ps)
+          NAME = m.group(1)
+          with open('update/version.json') as f:
+              d = json.load(f)
+          NEW = d.get('versionCode', 0) + 1
+          NEWNAME = f"{NAME}+{NEW}"
+          d['versionCode'] = NEW
+          d['versionName'] = NEWNAME
+          d['apk'] = 'app-release.apk'
+          d['note'] = f'auto build v{NEWNAME}'
+          with open('update/version.json','w') as f:
+              json.dump(d, f, ensure_ascii=False)
+          print(f"bumping to {NEWNAME}")
+          PY
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Move apk into update/
+        run: |
+          set -e
+          mv build/app/outputs/flutter-apk/app-release.apk update/app-release.apk
+
+      - name: Commit and push update/ (apk + version.json)
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add update/app-release.apk update/version.json
+          if git diff --cached --quiet; then
+            echo "no changes to commit"
+          else
+            git commit -m "ci: auto build apk v$(grep -m1 '^version:' pubspec.yaml | sed -E 's/.*\+([0-9]+).*/\1/')"
+            git push
+          fi
