@@ -39,15 +39,13 @@ jobs:
                   d = json.load(f)
               NEW = d.get('versionCode', 0) + 1
           else:
-              # 首次构建：仓库里没有 version.json（被 .gitignore 忽略 / 仅网页手动上传过）。
-              # 手机已装初版为 pubspec 当前 versionCode，为了让 CI 首包即可覆盖更新，
-              # 起始 versionCode 取 pubspec 当前值 +1（至少 2）。
+              # 首次构建：仓库里没有 version.json（被 .gitignore 忽略）。
+              # 用户初版尚未下载安装，CI 首包应与初版一致 = pubspec 当前 versionCode（默认 1）。
               try:
-                  base = int(m.group(2))
+                  NEW = int(m.group(2))
               except Exception:
-                  base = 1
-              NEW = max(base + 1, 2)
-              print(f"update/version.json 不存在，创建初始版本 versionCode={NEW}（可覆盖手机初版 {base}）")
+                  NEW = 1
+              print(f"update/version.json 不存在，创建初始版本 versionCode={NEW}（与初版一致）")
           NEWNAME = f"{BASE}+{NEW}"
           d = {
               'versionCode': NEW,
