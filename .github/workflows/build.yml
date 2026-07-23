@@ -49,7 +49,7 @@ jobs:
           PY
 
       - name: Build release APK
-        run: flutter build apk --release
+        run: flutter build apk --release --no-tree-shake-icons
 
       - name: Move apk into update/
         run: |
