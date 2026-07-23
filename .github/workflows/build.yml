@@ -59,6 +59,7 @@ jobs:
       - name: Move apk into update/
         run: |
           set -e
+          mkdir -p update
           # 兼容 CI 上 apk 可能出现在不同子目录的情况
           APK_SRC=$(find build/app/outputs -type f -name "app-release.apk" | head -n1)
           if [ -z "$APK_SRC" ]; then
