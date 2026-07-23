@@ -19,30 +19,30 @@
 
 ## 二、日后每次发布新版本（WorkBuddy 改完代码后）
 
-WorkBuddy 改完代码、build web 验证通过后，你只需在本机做 3 步：
+WorkBuddy 改完代码、build web 验证通过后，你只需在本机做 2 步：
 
-1. **升版本号**：`pubspec.yaml` 的 `version: 1.0.0+X` 把 X 加 1
-   （例如 `1.0.0+1` → `1.0.0+2`）。这一步必须做，App 靠它判断是否要更新。
+1. **双击 `发布新版.bat`**（工程根目录）：
+   它会自动完成以下全部事项，无需你手动改任何版本号：
+   - 调用 `bump_version.py`：读取 `pubspec.yaml` 的 `version: 1.0.0+X`，X 自动 +1，
+     并同步写回 `pubspec.yaml` 与 `update/version.json`（versionCode / versionName 一致）
+   - `flutter build apk --release` 出包
+   - `move` apk 到 `update/app-release.apk`（覆盖旧包）
+   
+   （用 `move` 而非 `copy`：apk 是编译产物，删了可用同一份源码随时 `flutter build apk` 重生，
+   没必要在工程里留双份。Windows 的 `move` 遇到同名会自动覆盖旧包，符合发版预期。）
 
-2. **出包**：
+2. **推送**：脚本跑完后，在工程目录执行：
    ```bash
-   flutter build apk --release
-   ```
-   生成的 `build/app/outputs/flutter-apk/app-release.apk` 复制为：
-   ```
-   update/app-release.apk
-   ```
-
-3. **更新 version.json 并推送**：
-   编辑 `update/version.json`，把 `versionCode` 改成和上一步一致的 X，`versionName` 同步，
-   `note` 写本次更新说明。然后：
-   ```bash
-   git add update/app-release.apk update/version.json pubspec.yaml
+   git add -A
    git commit -m "release: v1.0.0+X"
    git push
    ```
+   （X 为脚本自动提升后的数字，看脚本末尾回显即可）
 
 完成。手机上打开 App（或等 2 秒自动检查）即会弹「发现新版本」→ 点更新即可。
+
+> 手动方式（不用脚本时）：自行把 `pubspec.yaml` 与 `update/version.json` 的版本号 +1，
+> 再 `flutter build apk --release` 并 `move` 到 `update/`。脚本只是把这三件事合并为一键。
 
 ---
 
