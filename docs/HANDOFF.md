@@ -14,7 +14,7 @@ D:\UserData\桌面\预览日历.bat
 :: 沙箱/终端做静态检查（无 error 即通过）
 D:\software\flutter\bin\flutter.bat analyze
 ```
-工程路径：`C:\Users\31243\WorkBuddy\2026-07-19-15-04-20时间开发\schedule_time_app`
+工程路径：`C:\Users\31243\WorkBuddy\TIME-2026-07-19-15-04-20\schedule_time_app`
 无可编译问题时，优先对照 `video_source/replica_final.png` + `replica_final.py` 做像素级微调。
 
 ---
