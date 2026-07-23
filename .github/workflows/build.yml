@@ -22,30 +22,50 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Bump version (read update/version.json, +1)
+      - name: Bump version (create update/version.json if missing, else +1)
+        id: bump
         run: |
           set -e
-          if [ ! -f update/version.json ]; then
-            echo "update/version.json 不存在，跳过版本写入"
-            exit 0
-          fi
-          python3 - <<PY
-          import json, re
+          mkdir -p update
+          python3 - <<'PY'
+          import json, re, os
           with open('pubspec.yaml') as f:
               ps = f.read()
           m = re.search(r'version:\s*([0-9]+\.[0-9]+\.[0-9]+)\+(\d+)', ps)
-          NAME = m.group(1)
-          with open('update/version.json') as f:
-              d = json.load(f)
-          NEW = d.get('versionCode', 0) + 1
-          NEWNAME = f"{NAME}+{NEW}"
-          d['versionCode'] = NEW
-          d['versionName'] = NEWNAME
-          d['apk'] = 'app-release.apk'
-          d['note'] = f'auto build v{NEWNAME}'
-          with open('update/version.json','w') as f:
-              json.dump(d, f, ensure_ascii=False)
+          BASE = m.group(1)          # 例如 1.0.0
+          path = 'update/version.json'
+          if os.path.exists(path):
+              with open(path) as f:
+                  d = json.load(f)
+              NEW = d.get('versionCode', 0) + 1
+          else:
+              # 首次构建：仓库里没有 version.json（被 .gitignore 忽略 / 仅网页手动上传过）。
+              # 手机已装初版为 pubspec 当前 versionCode，为了让 CI 首包即可覆盖更新，
+              # 起始 versionCode 取 pubspec 当前值 +1（至少 2）。
+              try:
+                  base = int(m.group(2))
+              except Exception:
+                  base = 1
+              NEW = max(base + 1, 2)
+              print(f"update/version.json 不存在，创建初始版本 versionCode={NEW}（可覆盖手机初版 {base}）")
+          NEWNAME = f"{BASE}+{NEW}"
+          d = {
+              'versionCode': NEW,
+              'versionName': NEWNAME,
+              'apk': 'app-release.apk',
+              'note': f'auto build v{NEWNAME}',
+          }
+          with open(path, 'w', encoding='utf-8') as f:
+              json.dump(d, f, ensure_ascii=False, indent=2)
+          # 同步回写 pubspec.yaml，保证两者一致（CI 模式下以 version.json 为权威）
+          new_ps = re.sub(r'version:\s*[0-9]+\.[0-9]+\.[0-9]+\+\d+',
+                          f'version: {NEWNAME}', ps)
+          with open('pubspec.yaml', 'w', encoding='utf-8') as f:
+              f.write(new_ps)
           print(f"bumping to {NEWNAME}")
+          # 导出给后续步骤用
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
+              f.write(f"versionName={NEWNAME}\n")
           PY
 
       - name: Build release APK
@@ -74,10 +94,12 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add update/app-release.apk update/version.json
+          # 根 .gitignore 忽略了 /update/，这里用 -f 强制添加 CI 产物（apk + version.json）
+          git add -f update/app-release.apk update/version.json
+          git add pubspec.yaml
           if git diff --cached --quiet; then
             echo "no changes to commit"
           else
-            git commit -m "ci: auto build apk v$(grep -m1 '^version:' pubspec.yaml | sed -E 's/.*\+([0-9]+).*/\1/')"
+            git commit -m "ci: auto build apk v${{ steps.bump.outputs.versionName }}"
             git push
           fi
