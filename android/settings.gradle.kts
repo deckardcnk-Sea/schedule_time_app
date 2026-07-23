@@ -11,9 +11,27 @@ pluginManagement {
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
     repositories {
+        maven { url = uri("https://maven.aliyun.com/repository/google") }
+        maven { url = uri("https://maven.aliyun.com/repository/gradle-plugin") }
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
+        maven { url = uri("https://repo.huaweicloud.com/repository/maven") }
         google()
         mavenCentral()
         gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        // Flutter engine 专用镜像（必须排第一，优先于 Google）
+        maven { url = uri("https://storage.flutter-io.cn/download.flutter.io") }
+        maven { url = uri("https://storage.googleapis.com/download.flutter.io") }
+        maven { url = uri("https://maven.aliyun.com/repository/google") }
+        maven { url = uri("https://maven.aliyun.com/repository/public") }
+        maven { url = uri("https://repo.huaweicloud.com/repository/maven") }
+        google()
+        mavenCentral()
     }
 }
 
