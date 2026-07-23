@@ -30,9 +30,8 @@ android {
             // 固定签名：保证覆盖安装不丢数据（keystore 与 key.properties 随工程走）
             val keyPropsFile = rootProject.file("key.properties")
             if (keyPropsFile.exists()) {
-                val keyProps = java.util.Properties().apply {
-                    keyPropsFile.inputStream().use { input -> load(input) }
-                }
+                val keyProps = java.util.Properties()
+                keyPropsFile.inputStream().use { keyProps.load(it) }
                 signingConfigs {
                     create("release") {
                         storeFile = file(keyProps["storeFile"] as String)
