@@ -49,12 +49,24 @@ jobs:
           PY
 
       - name: Build release APK
-        run: flutter build apk --release --no-tree-shake-icons
+        run: |
+          set -e
+          flutter build apk --release --no-tree-shake-icons
+          echo "=== build outputs ==="
+          find build/app/outputs -type f -name "*.apk" || true
+          ls -la build/app/outputs/flutter-apk/ || true
 
       - name: Move apk into update/
         run: |
           set -e
-          mv build/app/outputs/flutter-apk/app-release.apk update/app-release.apk
+          # 兼容 CI 上 apk 可能出现在不同子目录的情况
+          APK_SRC=$(find build/app/outputs -type f -name "app-release.apk" | head -n1)
+          if [ -z "$APK_SRC" ]; then
+            echo "错误：找不到 app-release.apk"
+            exit 1
+          fi
+          echo "找到 apk: $APK_SRC"
+          mv "$APK_SRC" update/app-release.apk
 
       - name: Commit and push update/ (apk + version.json)
         run: |
