@@ -1,7 +1,7 @@
 name: schedule_time_app
 description: "日程管理 + 时间记录 App（复刻苹果日历体验）"
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.12.0
